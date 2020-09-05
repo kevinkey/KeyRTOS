@@ -1,6 +1,6 @@
 #include "list.h"
-#include <stdio.h>
 #include <stdint.h>
+#include "test.h"
 
 struct test_t
 {
@@ -8,7 +8,7 @@ struct test_t
     uint8_t data;
 };
 
-void main(void)
+int main(void)
 {
     struct list_t list;
     struct test_t pool[16];
@@ -21,12 +21,13 @@ void main(void)
         list_add(&list, (struct list_item_t *)&(pool[i]), LIST_ADD_TAIL);
     }
 
+    uint8_t count = 0u;
     LIST_LOOP_EACH(&list, p_i)
     {
         struct test_t * p_test = (struct test_t *)p_i;
-        printf("%d...", p_test->data);
+        TEST_EQUAL(p_test->data, count);
+        count++;
     }
-    printf("\n");
 
     list_init(&list);
 
@@ -36,10 +37,13 @@ void main(void)
         list_add(&list, (struct list_item_t *)&(pool[i]), LIST_ADD_HEAD);
     }
 
+    count = 15u;
     LIST_LOOP_EACH(&list, p_i)
     {
         struct test_t * p_test = (struct test_t *)p_i;
-        printf("%d...", p_test->data);
+        TEST_EQUAL(p_test->data, count);
+        count--;
     }
-    printf("\n");
+
+    exit(EXIT_SUCCESS);
 }
