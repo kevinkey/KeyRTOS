@@ -1,4 +1,4 @@
-require_relative "support/support.rb"
+require_relative "support/build.rb"
 
 build_dir = "./build"
 includes = (["support"] + Dir.new("source").dirs(-1)).map {|i| "-I#{i}"}

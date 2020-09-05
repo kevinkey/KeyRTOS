@@ -35,8 +35,8 @@ def cmd(c, desc)
         puts c.join(" ")
     end
     if system(*c.flatten)
-        puts "success"
+        puts ""
     else
-        puts "failS"
+        puts "fail!"
     end
 end
