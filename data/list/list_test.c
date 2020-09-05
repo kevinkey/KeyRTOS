@@ -21,9 +21,9 @@ void main(void)
         list_add(&list, (struct list_item_t *)&(pool[i]), LIST_ADD_TAIL);
     }
 
-    LIST_LOOP_EACH(&list)
+    LIST_LOOP_EACH(&list, p_i)
     {
-        struct test_t * p_test = (struct test_t *)p_item;
+        struct test_t * p_test = (struct test_t *)p_i;
         printf("%d...", p_test->data);
     }
     printf("\n");
@@ -36,9 +36,9 @@ void main(void)
         list_add(&list, (struct list_item_t *)&(pool[i]), LIST_ADD_HEAD);
     }
 
-    LIST_LOOP_EACH(&list)
+    LIST_LOOP_EACH(&list, p_i)
     {
-        struct test_t * p_test = (struct test_t *)p_item;
+        struct test_t * p_test = (struct test_t *)p_i;
         printf("%d...", p_test->data);
     }
     printf("\n");
