@@ -46,5 +46,24 @@ void list_add(struct list_t * p_list, struct list_item_t * p_item, enum list_add
 
 void list_del(struct list_t * p_list, struct list_item_t * p_item)
 {
+    if(p_list->p_head == p_item)
+    {
+        p_list->p_head = p_item->p_next;
+    }
+    else if(p_item->p_prev != NULL)
+    {
+        p_item->p_prev->p_next = p_item->p_next;
+    }
 
+    if(p_list->p_tail == p_item)
+    {
+        p_list->p_tail = p_item->p_prev;
+    }
+    else if(p_item->p_next != NULL)
+    {
+        p_item->p_next->p_prev = p_item->p_prev;
+    }
+
+    p_item->p_next = NULL;
+    p_item->p_prev = NULL;
 }
