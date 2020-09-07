@@ -1,10 +1,11 @@
+$ENV = {"BUILD_DIR" => "./build"}
+
 class Dir
     def dirs(depth = -1)
-        d = []
+        d = [self.path]
         self.each do |p|
             full_path = File.join(self.path, p)
             if File.directory?(full_path) && !p.start_with?(".")
-                d << full_path
                 if (depth > 0) || (depth < 0)
                     d += Dir.new(full_path).dirs(depth - 1)
                 end
@@ -39,4 +40,28 @@ def cmd(c, desc)
     else
         puts "fail!"
     end
+end
+
+def include_path(path, depth = -1)
+    $ENV["INCLUDE"] = [] if !$ENV.key?("INCLUDE")
+    $ENV["INCLUDE"] += Dir.new(path).dirs(depth).map {|i| "-I#{i}"}
+end
+
+def compile(c)
+    o = File.join($ENV["BUILD_DIR"], c.sub(".c", ".o"))
+
+    FileUtils.mkdir_p(File.dirname(o))
+    cmd(["gcc", "-o", o, $ENV["INCLUDE"], "-c", c], "Compile #{File.basename(c)}")
+
+    $ENV["OBJ"] = [] if !$ENV.key?("OBJ")
+    $ENV["OBJ"] << o
+end
+
+def program(c)
+    exe = File.join($ENV["BUILD_DIR"], c.sub(".c", ""))
+
+    FileUtils.mkdir_p(File.dirname(exe))
+    cmd(["gcc", "-o", exe, $ENV["INCLUDE"], $ENV["OBJ"], c], "Program #{File.basename(c)}")
+
+    exe
 end

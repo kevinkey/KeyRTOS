@@ -1,7 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include <stddef.h>
+#include "types.h"
 
 struct list_item_t
 {
@@ -22,6 +22,14 @@ enum list_add_t
 };
 
 void list_init(struct list_t * p_list);
+static inline struct list_item_t * list_head(struct list_t * p_list)
+{
+    return p_list->p_head;
+}
+static inline struct list_item_t * list_tail(struct list_t * p_list)
+{
+    return p_list->p_tail;
+}
 void list_add(struct list_t * p_list, struct list_item_t * p_item, enum list_add_t add);
 void list_del(struct list_t * p_list, struct list_item_t * p_item);
 
