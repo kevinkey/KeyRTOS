@@ -1,8 +1,6 @@
 #include "system.h"
 #include "irq.h"
 #include "list.h"
-#include "task.h"
-#include "time.h"
 
 struct list_t Task_List;
 struct task_t * Active_Task;
