@@ -1,69 +1,69 @@
 #include "list.h"
 
-void list_init(struct list_t * p_list)
+void list_init(struct list_t * list)
 {
-    p_list->p_head = NULL;
-    p_list->p_tail = NULL;
+    list->head = NULL;
+    list->tail = NULL;
 }
 
-void list_add(struct list_t * p_list, struct list_item_t * p_item, enum list_add_t add)
+void list_add(struct list_t * list, struct list_item_t * item, enum list_add_t add)
 {
     switch(add)
     {
         case LIST_ADD_HEAD:
-            p_item->p_prev = NULL;
-            p_item->p_next = p_list->p_head;
+            item->prev = NULL;
+            item->next = list->head;
 
-            if(p_item->p_next != NULL)
+            if(item->next != NULL)
             {
-                p_item->p_next->p_prev = p_item;
+                item->next->prev = item;
             }
             else
             {
-                p_list->p_tail = p_item;
+                list->tail = item;
             }
 
-            p_list->p_head = p_item;
+            list->head = item;
             break;
         case LIST_ADD_TAIL:
         default:
-            p_item->p_prev = p_list->p_tail;
-            p_item->p_next = NULL;
+            item->prev = list->tail;
+            item->next = NULL;
 
-            if(p_item->p_prev != NULL)
+            if(item->prev != NULL)
             {
-                p_item->p_prev->p_next = p_item;
+                item->prev->next = item;
             }
             else
             {
-                p_list->p_head = p_item;
+                list->head = item;
             }
 
-            p_list->p_tail = p_item;
+            list->tail = item;
             break;
     }
 }
 
-void list_del(struct list_t * p_list, struct list_item_t * p_item)
+void list_del(struct list_t * list, struct list_item_t * item)
 {
-    if(p_list->p_head == p_item)
+    if(list->head == item)
     {
-        p_list->p_head = p_item->p_next;
+        list->head = item->next;
     }
-    else if(p_item->p_prev != NULL)
+    else if(item->prev != NULL)
     {
-        p_item->p_prev->p_next = p_item->p_next;
-    }
-
-    if(p_list->p_tail == p_item)
-    {
-        p_list->p_tail = p_item->p_prev;
-    }
-    else if(p_item->p_next != NULL)
-    {
-        p_item->p_next->p_prev = p_item->p_prev;
+        item->prev->next = item->next;
     }
 
-    p_item->p_next = NULL;
-    p_item->p_prev = NULL;
+    if(list->tail == item)
+    {
+        list->tail = item->prev;
+    }
+    else if(item->next != NULL)
+    {
+        item->next->prev = item->prev;
+    }
+
+    item->next = NULL;
+    item->prev = NULL;
 }

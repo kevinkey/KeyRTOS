@@ -1,38 +1,48 @@
 #include "task.h"
 #include "irq.h"
 #include "system.h"
+#include <string.h>
 
-void task_init(struct task_t * p_task, enum task_priority_t priority)
+static uint8_t const Sentinel[] = {0x12u, 0x34u, 0x56u, 0x78u};
+
+void task_init(struct task_t * task)
 {
-    stack_init(p_task->p_stack);
-    p_task->p_event = NULL;
-    p_task->priority = priority;
-    system_add_task(p_task);
+    uint8_t * p_stack = (uint8_t *)&(task->STACK[task->SIZE]) - sizeof(Sentinel);
+
+    while(p_stack >= (uint8_t *)task->STACK)
+    {
+        memcpy(p_stack, Sentinel, sizeof(Sentinel));
+        p_stack -= sizeof(Sentinel);
+    }
+    stack_init(task->STACK);
+
+    task->event = NULL;
+    system_add_task(task);
 }
 
-void task_wait(struct task_t * p_task, event_t * p_event, time_t timeout)
+bool task_wait(struct task_t * task, event_t * event, time_t timeout)
 {
     bool state = irq_disable();
 
-    p_task->p_event = p_event;
-    p_task->timeout = time_now() + timeout;
+    task->event = event;
+    task->timeout = time_now() + timeout;
+
+    system_yield();
 
     irq_enable(state);
+
+    return ((task->event != NULL) && event_status(task->event));
 }
 
-bool task_ready(struct task_t * p_task)
+bool task_ready(struct task_t * task)
 {
     bool ready;
 
-    if(p_task->p_event == NULL)
+    if(time_now() >= task->timeout)
     {
         ready = true;
     }
-    else if(event_status(p_task->p_event))
-    {
-        ready = true;
-    }
-    else if(time_now() >= p_task->timeout)
+    else if((task->event != NULL) && event_status(task->event))
     {
         ready = true;
     }
@@ -42,4 +52,19 @@ bool task_ready(struct task_t * p_task)
     }
 
     return ready;
+}
+
+void task_save(struct task_t * task)
+{
+    stack_save(task->STACK);
+
+    uint8_t * p_stack = (uint8_t *)&(task->STACK[task->SIZE]) - sizeof(Sentinel);
+
+    if(0 != memcmp(p_stack, Sentinel, sizeof(Sentinel)))
+    {
+        while(true)
+        {
+            /* stack overflow detected */
+        }
+    }
 }

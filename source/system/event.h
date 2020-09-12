@@ -5,19 +5,19 @@
 
 typedef bool event_t;
 
-static inline void event_set(event_t * p_event)
+static inline void event_set(event_t * event)
 {
-    *p_event = true;
+    *event = true;
 }
 
-static inline void event_clear(event_t * p_event)
+static inline void event_clear(event_t * event)
 {
-    *p_event = false;
+    *event = false;
 }
 
-static inline bool event_status(event_t * p_event)
+static inline bool event_status(event_t * event)
 {
-    return *p_event;
+    return *event;
 }
 
 #endif

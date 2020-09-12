@@ -18,29 +18,21 @@ enum task_priority_t
 struct task_t
 {
     struct list_item_t item;
-    uint_t * p_stack;
-    enum task_priority_t priority;
-    event_t * p_event;
+    uint_t * STACK;
+    uint_t SIZE;
+    enum task_priority_t PRIORITY;
+    event_t * event;
     time_t timeout;
 };
 
-void task_init(struct task_t * p_task, enum task_priority_t priority);
-void task_wait(struct task_t * p_task, event_t * p_event, time_t timeout);
-bool task_ready(struct task_t * p_task);
+void task_init(struct task_t * task);
+bool task_wait(struct task_t * task, event_t * event, time_t timeout);
+bool task_ready(struct task_t * task);
+void task_save(struct task_t * task);
 
-static inline enum task_priority_t task_priority(struct task_t * p_task)
+static inline void task_load(struct task_t * task)
 {
-    return p_task->priority;
-}
-
-static inline void task_save(struct task_t * p_task)
-{
-    stack_save(p_task->p_stack);
-}
-
-static inline void task_load(struct task_t * p_task)
-{
-    stack_load(p_task->p_stack);
+    stack_load(task->STACK);
 }
 
 #endif

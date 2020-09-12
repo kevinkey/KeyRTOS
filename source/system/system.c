@@ -1,22 +1,40 @@
 #include "system.h"
 #include "irq.h"
 #include "list.h"
+#include "task.h"
 #include "time.h"
 
 struct list_t Task_List;
-struct task_t * p_Active_Task;
+struct task_t * Active_Task;
+uint_t Stack[STACK_CONTEXT_SIZE];
+struct task_t Idle =
+{
+    .STACK = Stack,
+    .SIZE = STACK_CONTEXT_SIZE,
+    .PRIORITY = TASK_PRIORITY_LOW
+};
+
+static void idle_task(void)
+{
+    while(true)
+    {
+        /* do nothing */
+    }
+}
 
 static void schedule_task(void)
 {
-    LIST_LOOP_EACH(&Task_List, p_i)
-    {
-        struct task_t * p_task = (struct task_t *)p_i;
+    Active_Task = &Idle;
 
-        if(task_ready(p_task))
+    LIST_LOOP_EACH(&Task_List, i)
+    {
+        struct task_t * task = (struct task_t *)i;
+
+        if(task_ready(task))
         {
-            if((int_t)task_priority(p_task) > (int_t)task_priority(p_Active_Task))
+            if((uint_t)task->PRIORITY > (uint_t)Active_Task->PRIORITY)
             {
-                p_Active_Task = p_task;
+                Active_Task = task;
             }
         }
     }
@@ -25,13 +43,13 @@ static void schedule_task(void)
 void system_init(void)
 {
     list_init(&Task_List);
+    task_init(&Idle);
 }
 
 void system_start(void)
 {
-    p_Active_Task = (struct task_t *)list_head(&Task_List);
     schedule_task();
-    task_load(p_Active_Task);
+    task_load(Active_Task);
 
     irq_enable(true);
 }
@@ -40,19 +58,19 @@ void system_tick(time_t amount)
 {
     bool state = irq_disable();
 
-    task_save(p_Active_Task);
+    task_save(Active_Task);
     time_increment(amount);
     schedule_task();
-    task_load(p_Active_Task);
+    task_load(Active_Task);
 
     irq_enable(state);
 }
 
-void system_add_task(struct task_t * p_task)
+void system_add_task(struct task_t * task)
 {
     bool state = irq_disable();
 
-    list_add(&Task_List, (struct list_item_t *)p_task, LIST_ADD_HEAD);
+    list_add(&Task_List, (struct list_item_t *)task, LIST_ADD_HEAD);
 
     irq_enable(state);
 }

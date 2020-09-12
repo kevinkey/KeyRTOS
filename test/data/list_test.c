@@ -22,10 +22,10 @@ static void list_tail_test(void)
     }
 
     uint8_t count = 0u;
-    LIST_LOOP_EACH(&list, p_i)
+    LIST_LOOP_EACH(&list, i)
     {
-        struct test_t * p_test = (struct test_t *)p_i;
-        TEST_EQUAL(p_test->data, count);
+        struct test_t * test = (struct test_t *)i;
+        TEST_EQUAL(test->data, count);
         count++;
     }
 
@@ -35,10 +35,10 @@ static void list_tail_test(void)
     }
 
     count = 1u;
-    LIST_LOOP_EACH(&list, p_i)
+    LIST_LOOP_EACH(&list, i)
     {
-        struct test_t * p_test = (struct test_t *)p_i;
-        TEST_EQUAL(p_test->data, count);
+        struct test_t * test = (struct test_t *)i;
+        TEST_EQUAL(test->data, count);
         count += 2u;
     }
 }
@@ -57,10 +57,10 @@ static void list_head_test(void)
     }
 
     uint8_t count = 15u;
-    LIST_LOOP_EACH(&list, p_i)
+    LIST_LOOP_EACH(&list, i)
     {
-        struct test_t * p_test = (struct test_t *)p_i;
-        TEST_EQUAL(p_test->data, count);
+        struct test_t * test = (struct test_t *)i;
+        TEST_EQUAL(test->data, count);
         count--;
     }
 
@@ -70,10 +70,10 @@ static void list_head_test(void)
     }
 
     count = 15u;
-    LIST_LOOP_EACH(&list, p_i)
+    LIST_LOOP_EACH(&list, i)
     {
-        struct test_t * p_test = (struct test_t *)p_i;
-        TEST_EQUAL(p_test->data, count);
+        struct test_t * test = (struct test_t *)i;
+        TEST_EQUAL(test->data, count);
         count -= 2u;
     }
 }
