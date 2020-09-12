@@ -18,6 +18,7 @@ enum task_priority_t
 struct task_t
 {
     struct list_item_t item;
+    void (*FUNCTION)(void);
     uint_t * STACK;
     uint_t SIZE;
     enum task_priority_t PRIORITY;

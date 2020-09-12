@@ -6,13 +6,6 @@
 
 struct list_t Task_List;
 struct task_t * Active_Task;
-uint_t Stack[STACK_CONTEXT_SIZE];
-struct task_t Idle =
-{
-    .STACK = Stack,
-    .SIZE = STACK_CONTEXT_SIZE,
-    .PRIORITY = TASK_PRIORITY_LOW
-};
 
 static void idle_task(void)
 {
@@ -21,6 +14,15 @@ static void idle_task(void)
         /* do nothing */
     }
 }
+
+uint_t Stack[STACK_CONTEXT_SIZE];
+struct task_t Idle =
+{
+    .FUNCTION = idle_task,
+    .STACK = Stack,
+    .SIZE = STACK_CONTEXT_SIZE,
+    .PRIORITY = TASK_PRIORITY_LOW
+};
 
 static void schedule_task(void)
 {

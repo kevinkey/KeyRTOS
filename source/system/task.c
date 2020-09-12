@@ -14,7 +14,7 @@ void task_init(struct task_t * task)
         memcpy(p_stack, Sentinel, sizeof(Sentinel));
         p_stack -= sizeof(Sentinel);
     }
-    stack_init(task->STACK);
+    stack_init(task->STACK, task->FUNCTION);
 
     task->event = NULL;
     system_add_task(task);
